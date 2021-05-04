@@ -7,7 +7,9 @@ import holdem.engine.dawson.Card;
 import holdem.engine.dawson.Turn;
 import holdem.entity.dawson.Player;
 import holdem.graphic.dawson.Drawable;
+import holdem.renderer.dawson.Pixel;
 import holdem.renderer.dawson.Renderer;
+import holdem.utils.dawson.Color;
 
 public class Table extends Drawable {
 	public final int HEIGHT = Card.HEIGHT + 4;
@@ -87,22 +89,28 @@ public class Table extends Drawable {
 	
 	@Override
 	public void draw() {
-		char[][] asciiArray = new char[HEIGHT][WIDTH];
-		
-		asciiArray[0][0] ='┏';
+		Pixel[][] asciiArray = new Pixel[HEIGHT][WIDTH];
+
+		asciiArray[0][0] = new Pixel('┏', Color.BLACK);
 		
 		for (int i = 1; i < WIDTH - 1; i++) {
-			asciiArray[0][i] = '━'; // Top border
-			asciiArray[HEIGHT - 1][i] = '━'; // Bottom border
+			asciiArray[0][i] = new Pixel('━', Color.BLACK); // Top border
+			asciiArray[HEIGHT - 1][i] = new Pixel('━', Color.BLACK); // Bottom border
 		}
 		
-		asciiArray[0][WIDTH -1] = '┓';
-		asciiArray[HEIGHT - 1][WIDTH -1] = '┛';
+		asciiArray[0][WIDTH -1] = new Pixel('┓', Color.BLACK);
+		asciiArray[HEIGHT - 1][WIDTH -1] = new Pixel('┛', Color.BLACK);
 		
 		for (int i = 1; i < HEIGHT - 1; i++) {
-			asciiArray[i][0] = '┃';	
-			asciiArray[i][WIDTH - 1] = '┃';	
-		}	
+			asciiArray[i][0] = new Pixel('┃', Color.BLACK);
+			asciiArray[i][WIDTH - 1] = new Pixel('┃', Color.BLACK);
+		}
+
+		for (int y = 1; y < HEIGHT - 1; y++) {
+			for (int x = 1; x < WIDTH - 1; x++) {
+				asciiArray[y][x] = new Pixel(' ', Color.BLACK);
+			}
+		}
 		
 		Renderer.Render(this.cords, asciiArray);
 	}

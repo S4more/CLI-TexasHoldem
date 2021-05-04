@@ -1,11 +1,15 @@
 package holdem.hud.dawson;
 
 import holdem.graphic.dawson.Drawable;
+import holdem.renderer.dawson.Pixel;
 import holdem.renderer.dawson.Renderer;
+import holdem.utils.dawson.Color;
 
 public class Text extends Drawable{
 	private int maxWidth;
 	private int maxHeight;
+
+	private Color color;
 	
 	private String text;
 	private String[] splitText;
@@ -19,6 +23,11 @@ public class Text extends Drawable{
 	 * @param text
 	 */
 	public Text(int x, int y, int maxWidth, int maxHeight, String text) {
+	    this(x, y, maxWidth, maxHeight, text, Color.RED);
+	}
+
+	public Text(int x, int y, int maxWidth, int maxHeight, String text, Color color) {
+		this.color = color;
 		this.cords = new int[] {x, y};
 		this.maxWidth = maxWidth;
 		this.maxHeight = maxHeight;
@@ -53,14 +62,14 @@ public class Text extends Drawable{
 	
 	@Override
 	public void draw() {
-		char bufferArray[][] = new char[this.splitText.length][this.maxWidth];
+		Pixel bufferArray[][] = new Pixel[this.splitText.length][this.maxWidth];
 		for (int y = 0; y < this.splitText.length; y++) {
 			char c[] = this.splitText[y].toCharArray();
 			for (int x = 0; x < this.maxWidth; x++) {	
 				try {
-					bufferArray[y][x] = c[x];
+					bufferArray[y][x] = new Pixel(c[x], this.color);
 				} catch (ArrayIndexOutOfBoundsException e) {
-					bufferArray[y][x] = '\0';
+					bufferArray[y][x] = new Pixel(' ', this.color);
 				}
 			}
 		}

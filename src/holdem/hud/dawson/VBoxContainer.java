@@ -36,7 +36,8 @@ public class VBoxContainer extends Drawable {
 				bufferArray[y][x] = '\0';
 			}
 		}
-		Renderer.Render(this.cords, bufferArray);
+
+		//Renderer.Render(this.cords, bufferArray);
 		Arrays.asList(texts).forEach(t -> t.draw());
 	}
 }

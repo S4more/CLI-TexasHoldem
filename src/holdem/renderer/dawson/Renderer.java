@@ -2,29 +2,41 @@ package holdem.renderer.dawson;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 import holdem.graphic.dawson.Drawable;
+import holdem.utils.dawson.Color;
 
 public class Renderer {
 
 	public static final int WIDTH = 80;
 	public static final int HEIGHT = (int) (WIDTH / 3.2);
+	private static final Color BGCOLOR = Color.BACKGROUND_BLACK;
 
-	private static ArrayList<Drawable> renderQueue = new ArrayList<Drawable>();	
+	private static ArrayList<Drawable> renderQueue = new ArrayList<Drawable>();
 
-	private static char[][] buffer = new char[HEIGHT][WIDTH];
+
+	private static Pixel[][] buffer = new Pixel[HEIGHT][WIDTH];
 
 	public static void draw() {
 		clrscr();
 		
-		System.out.println("\u001B[30m");
 		renderQueue.forEach(e -> e.draw());
-		
 
+		// Print buffer
 		for (int y = 0; y < HEIGHT; y++) {
-			System.out.println(new String(buffer[y]));
+			// Trick to use a reference to the string instead of the value itself.
+			// I don't like java sometimes...
+			String output[] = new String[]{""};
+
+			Arrays.asList(buffer[y]).stream()
+					.filter(x -> x != null)
+					.forEach(x -> output[0]+= BGCOLOR.toString() + x);
+
+			System.out.println(output[0]);
 		}
-		
+
 	}
 	
 	public static void addDrawable(Drawable obj) {
@@ -36,7 +48,7 @@ public class Renderer {
 		
 		for (int y = 0; y < HEIGHT; y++) {
 			for (int x = 0; x < WIDTH; x++) {
-				buffer[y][x] = ' ';
+				buffer[y][x] = new Pixel(' ', Color.BLACK);
 			}
 		}
 		
@@ -49,7 +61,7 @@ public class Renderer {
 	    } catch (IOException | InterruptedException ex) {}
 	}
 
-	public static void Render(int[] cords, char[][] drawableArray) {
+	public static void Render(int[] cords, Pixel[][] drawableArray) {
 		
 		for (int y = 0; y < HEIGHT; y++) {
 			for (int x = 0; x < WIDTH; x++) {
@@ -62,9 +74,9 @@ public class Renderer {
 
 				if (dy >= drawableArray.length || dx >= drawableArray[0].length) break;
 				
-				char c = drawableArray[dy][dx];
-				
-				if (c == '\0') {
+				Pixel c = drawableArray[dy][dx];
+
+				if (c == null) {
 					continue;
 				}
 				
@@ -73,6 +85,6 @@ public class Renderer {
 			}
 		}
 	}
-	
+
 
 }
