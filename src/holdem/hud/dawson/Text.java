@@ -2,10 +2,17 @@ package holdem.hud.dawson;
 
 import holdem.graphic.dawson.Drawable;
 import holdem.renderer.dawson.Pixel;
+import holdem.renderer.dawson.RenderType;
 import holdem.renderer.dawson.Renderer;
 import holdem.utils.dawson.Color;
 
-public class Text extends Drawable{
+public class Text extends Drawable {
+	/**
+	 * The special separator is not rendered. We can't use white spaces because of the trim method.
+	 */
+	public static final char SPECIAL_SEPARATOR = '^';
+
+
 	private int maxWidth;
 	private int maxHeight;
 
@@ -14,19 +21,16 @@ public class Text extends Drawable{
 	private String text;
 	private String[] splitText;
 
-	/**
-	 * 
-	 * @param maxWidth should be at least 3.
-	 * @param maxHeight
-	 * @param x
-	 * @param y
-	 * @param text
-	 */
+	public Text(String text, Color color) {
+		this(0, 0, text.length(), 1, text, color);
+	}
+
 	public Text(int x, int y, int maxWidth, int maxHeight, String text) {
 	    this(x, y, maxWidth, maxHeight, text, Color.RED);
 	}
 
 	public Text(int x, int y, int maxWidth, int maxHeight, String text, Color color) {
+		super(maxWidth, maxHeight);
 		this.color = color;
 		this.cords = new int[] {x, y};
 		this.maxWidth = maxWidth;
@@ -61,24 +65,50 @@ public class Text extends Drawable{
 	
 	
 	@Override
-	public void draw() {
+	public void draw(RenderType rt) {
 		Pixel bufferArray[][] = new Pixel[this.splitText.length][this.maxWidth];
 		for (int y = 0; y < this.splitText.length; y++) {
 			char c[] = this.splitText[y].toCharArray();
 			for (int x = 0; x < this.maxWidth; x++) {	
 				try {
+				    if (c[x] == SPECIAL_SEPARATOR) continue;
 					bufferArray[y][x] = new Pixel(c[x], this.color);
 				} catch (ArrayIndexOutOfBoundsException e) {
 					bufferArray[y][x] = new Pixel(' ', this.color);
 				}
 			}
 		}
-		
-		Renderer.Render(this.cords, bufferArray);
+
+		if (rt == RenderType.NORMAL) {
+			Renderer.Render(this.cords, bufferArray);
+		} else if (rt == RenderType.OPTION) {
+			Renderer.RenderOptions(this.cords, bufferArray);
+		}
 	}
-	
-	public int getRowCount() {
-		return this.splitText.length;
+
+	@Override
+	public int getWidth() {
+	    return this.maxWidth;
 	}
-	
+
+	@Override
+	public int getHeight() {
+	    return this.splitText.length;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) { this.color = color;}
+
+	/**
+	 * Returns a text with the same values but with a different string.
+	 * @param text
+	 * @return
+	 */
+	public Text changeText(String text) {
+		return new Text(this.cords[0], this.cords[1], this.maxWidth, this.maxHeight, text);
+	}
+
 }

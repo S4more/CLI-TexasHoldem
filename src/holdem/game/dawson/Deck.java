@@ -6,6 +6,7 @@ import java.util.Random;
 import holdem.engine.dawson.Card;
 import holdem.engine.dawson.Card.Suit;
 import holdem.renderer.dawson.Renderer;
+import holdem.utils.dawson.Color;
 
 public class Deck {
 	private ArrayList<Card> cards = new ArrayList<Card>();
@@ -29,14 +30,8 @@ public class Deck {
 				value = i - 39;
 			}
 				
-			cards.add(new Card(suit, Integer.toString(value + 1)));
+			cards.add(new Card(0, 0, suit, Integer.toString(value + 1)));
 		}
-	}
-	
-	public Card drawTopCard() {
-		Card card = this.cards.get(0);
-		this.cards.remove(0);
-		return card;
 	}
 	
 	public Card drawRandomCard() {
@@ -45,11 +40,21 @@ public class Deck {
 		this.cards.remove(index);
 		return card;
 	}
+
+	public void putInDeck(Card ... cards) {
+		for (Card card : cards) {
+			if (card.isUp()) {
+				card.flip();
+			}
+			card.setColor(Color.WHITE);
+			this.cards.add(card);
+		}
+	}
 	
 	public Card drawRandomCard(int x, int y) {		
 		int index = rand.nextInt(this.cards.size());
 		Card card = this.cards.get(index);
-		card.setCords(new int[] {x, y});
+		card.setPos(x, y);
 		Renderer.addDrawable(card);
 		this.cards.remove(index);
 		return card;

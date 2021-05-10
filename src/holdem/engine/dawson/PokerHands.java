@@ -1,5 +1,8 @@
 package holdem.engine.dawson;
 
+/**
+ * All possible combinations that can happen in poker.
+ */
 public enum PokerHands {
 	HIGH_CARD,
 	ONE_PAIR,

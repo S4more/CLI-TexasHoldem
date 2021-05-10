@@ -2,12 +2,7 @@ package holdem.utils.dawson;
 
 public enum Color {
 
-    /*
-        Variables that which the colors start with an additional B are the bright version of the color.
-     */
-
     RESET("\u001B[0m"),
-
     BLACK("\u001B[30m"),
     RED("\u001B[31m"),
     GREEN("\u001B[32m"),
@@ -19,11 +14,13 @@ public enum Color {
 
     BACKGROUND_BLACK("\u001b[40m"),
     BACKGROUND_RED("\u001b[41m"),
-    BACKGROUND_WHITE("\u001b[47m");
+    BACKGROUND_WHITE("\u001b[47m"),
+
+    ERROR("\u001b[41m");
 
     public final String value;
 
-    private Color(String value) {
+    Color(String value) {
        this.value = value;
     }
 
