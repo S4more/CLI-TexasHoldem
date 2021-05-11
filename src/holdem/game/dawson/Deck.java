@@ -8,6 +8,9 @@ import holdem.engine.dawson.Card.Suit;
 import holdem.renderer.dawson.Renderer;
 import holdem.utils.dawson.Color;
 
+/**
+ * Stores 52 different cards and let you get cards from it.
+ */
 public class Deck {
 	private ArrayList<Card> cards = new ArrayList<Card>();
 	private Random rand = new Random();
@@ -33,7 +36,11 @@ public class Deck {
 			cards.add(new Card(0, 0, suit, Integer.toString(value + 1)));
 		}
 	}
-	
+
+	/**
+	 * Draws a random card from the deck and removes it from its list of cards.
+	 * @return
+	 */
 	public Card drawRandomCard() {
 		int index = rand.nextInt(this.cards.size());
 		Card card = this.cards.get(index);
@@ -41,17 +48,11 @@ public class Deck {
 		return card;
 	}
 
-	public void putInDeck(Card ... cards) {
-		for (Card card : cards) {
-			if (card.isUp()) {
-				card.flip();
-			}
-			card.setColor(Color.WHITE);
-			this.cards.add(card);
-		}
-	}
-	
-	public Card drawRandomCard(int x, int y) {		
+	/**
+	 * Draws a random card from the deck and removes it from its list of card.
+	 * It sets the card position to the given coordinates.
+	 */
+	public Card drawRandomCard(int x, int y) {
 		int index = rand.nextInt(this.cards.size());
 		Card card = this.cards.get(index);
 		card.setPos(x, y);

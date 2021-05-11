@@ -1,5 +1,9 @@
 package holdem.utils.dawson;
 
+/**
+ * An enum with all the colors used by the game.
+ * Holds all the ascii code for the respective colors
+ */
 public enum Color {
 
     RESET("\u001B[0m"),
@@ -13,8 +17,6 @@ public enum Color {
     WHITE("\u001B[37m"),
 
     BACKGROUND_BLACK("\u001b[40m"),
-    BACKGROUND_RED("\u001b[41m"),
-    BACKGROUND_WHITE("\u001b[47m"),
 
     ERROR("\u001b[41m");
 

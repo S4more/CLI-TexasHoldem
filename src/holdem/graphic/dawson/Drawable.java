@@ -16,6 +16,10 @@ public abstract class Drawable {
 		this.cords[1] = y;
 	}
 
+	/**
+	 * Creates a Pixel array representation of the Drawable object.
+	 * @param renderType which type of render it should call.
+	 */
 	abstract public void draw(RenderType renderType);
 	abstract public int getWidth();
 	abstract public int getHeight();

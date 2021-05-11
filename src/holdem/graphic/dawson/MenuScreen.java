@@ -9,6 +9,9 @@ import holdem.utils.dawson.Color;
 
 import java.util.Arrays;
 
+/**
+ * A MenuScreen with different Dialogues to introduce the User to the game.
+ */
 public class MenuScreen extends Drawable {
 
     private Dialogue outsideBorder;
@@ -33,7 +36,7 @@ public class MenuScreen extends Drawable {
         instructions[1] = new Dialogue(25, 7, 30, 6, 1,
                 new Text("Some actions require", Color.CYAN),
                 new Text("arguments. The usage", Color.CYAN),
-                new Text("for these these are:", Color.CYAN),
+                new Text("for these are:", Color.CYAN),
                 new Text("option_number money", Color.RED)
         );
 

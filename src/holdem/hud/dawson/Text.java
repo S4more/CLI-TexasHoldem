@@ -6,6 +6,10 @@ import holdem.renderer.dawson.RenderType;
 import holdem.renderer.dawson.Renderer;
 import holdem.utils.dawson.Color;
 
+/**
+ * An engine compliant String representation with colors that extends Drable.
+ * Use this if you want strings to be rendered as any other game objects.
+ */
 public class Text extends Drawable {
 	/**
 	 * The special separator is not rendered. We can't use white spaces because of the trim method.
@@ -21,14 +25,14 @@ public class Text extends Drawable {
 	private String text;
 	private String[] splitText;
 
-	public Text(String text, Color color) {
-		this(0, 0, text.length(), 1, text, color);
-	}
-
-	public Text(int x, int y, int maxWidth, int maxHeight, String text) {
-	    this(x, y, maxWidth, maxHeight, text, Color.RED);
-	}
-
+	/**
+	 * @param x the X coordinate of the Text.
+	 * @param y the Y coordinate of the Text.
+	 * @param maxWidth the Max Width this text can have.
+	 * @param maxHeight the max number of rows that this text can have.
+	 * @param text the content of the Text
+	 * @param color the color of the Text.
+	 */
 	public Text(int x, int y, int maxWidth, int maxHeight, String text, Color color) {
 		super(maxWidth, maxHeight);
 		this.color = color;
@@ -39,6 +43,17 @@ public class Text extends Drawable {
 		this.splitToFit();
 	}
 
+	public Text(String text, Color color) {
+		this(0, 0, text.length(), 1, text, color);
+	}
+
+	public Text(int x, int y, int maxWidth, int maxHeight, String text) {
+	    this(x, y, maxWidth, maxHeight, text, Color.RED);
+	}
+
+	/**
+	 * Splits the String into multiple Strings in order to make it fit the max given size.
+	 */
 	private void splitToFit() {
 		int textSize = this.text.length();
 		int rows = (int) Math.ceil((double) textSize / this.maxWidth);

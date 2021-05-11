@@ -6,20 +6,25 @@ import holdem.graphic.dawson.Drawable;
 import holdem.renderer.dawson.Pixel;
 import holdem.renderer.dawson.RenderType;
 import holdem.renderer.dawson.Renderer;
-import holdem.utils.dawson.ArrayHelper;
-import holdem.utils.dawson.Color;
 
+/**
+ * Stores Drawable objects and display each one of them
+ * in a separate row.
+ */
 public class VBoxContainer extends Drawable {
 	private Drawable elements[];
 	private int width;
 	private int height;
 	private int separator = 0;
 
-
-	public VBoxContainer(int x, int y, Drawable[] elements) {
-		this(x, y, ArrayHelper.getWidthOfLargestDrawable(elements), elements.length, elements);
-	}
-
+	/**
+	 *
+	 * @param x the X coordinate of the Container
+	 * @param y the Y coordinate of the Container
+	 * @param width the max width this container can have.
+	 * @param height the max number of rows this container can have.
+	 * @param elements the elements this container will display
+	 */
 	public VBoxContainer(int x, int y, int width, int height, Drawable[] elements) {
 		super(width, height);
 		this.cords = new int[] {x, y};

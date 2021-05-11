@@ -1,5 +1,8 @@
 package holdem.engine.dawson;
 
+/**
+ * An enum for all the possible Blinds in a poker game.
+ */
 public enum Blind {
 	SMALL(5),
 	BIG(10),

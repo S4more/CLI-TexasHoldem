@@ -21,8 +21,7 @@ public class Card extends Drawable {
 		}
 	}
 	
-	/** It is an awesome idea to keep these numbers as odd, since there is no float
-	 * points.  */
+	// It is an awesome idea to keep these numbers as odd, since there is no float points
 	public static final int HEIGHT = 7;
 	public static final int WIDTH = HEIGHT + 2;	
 
@@ -155,6 +154,14 @@ public class Card extends Drawable {
 		}
 	}
 
+
+	/**
+	 * Changes the direction that a card is facing.
+	 */
+	public void flip() {
+		this.isUp = !this.isUp;
+	}
+
 	@Override
 	public int getWidth() {
 		return WIDTH;
@@ -179,10 +186,6 @@ public class Card extends Drawable {
 
 	public void setCords(int[] cords) {
 		this.cords = cords;
-	}
-	
-	public void flip() {
-		this.isUp = !this.isUp;
 	}
 
 	public void setColor(Color color) {

@@ -40,10 +40,6 @@ public class Table extends Drawable {
 	// Turn related variables \\
 	private double lastBet = Blind.BIG.price;
 	private double pot = Blind.BIG.price + Blind.SMALL.price;
-	//TODO change that.
-	/** lastRaise[0] is the last orderedPlayer index to have raise and
-	 *  lastRaise[1] is by how much. */
-	private int lastToRaise = 0;
 	private double betPrice = Blind.BIG.price;
 
 	public Table() {
@@ -88,7 +84,6 @@ public class Table extends Drawable {
 	 *
 	 */
 	public void getActions() {
-	    System.out.println("New turn");
 	    int i = 0;
 	    this.lastRaisePlayer = Arrays.stream(this.orderedPlayers).
 				filter(p -> p.getBlind() == Blind.BIG).
@@ -348,48 +343,35 @@ public class Table extends Drawable {
 		}
 	}
 
+	/**
+	 * Flip the cards of all NPCs that are playing.
+	 */
+	private void flipNPCsIfPlaying() {
+		for (Player player : this.orderedPlayers) {
+			if (player instanceof NPC && player.isPlaying) {
+				player.flipCards();
+			}
+		}
+	}
+
+	/**
+	 * Handles the logic of finishing the round. It will try, in order
+	 * 1. To flip the card of the players who are still playing in the River turn and draw them.
+	 * 2. Evaluate which player has the biggest poker combination. [ATTENTION: The evaluation has a limited depth and
+	 * 	   may return the incorrect result depending on the hands.]
+	 * 3. Increment the money of the winner with the pot of the table.
+	 * 4. Display a EndingScreen according to the winning condition (Better combination or by resilience)
+     * 5. Set the isOver condition to true.
+	 */
 	private void finishRound() {
 
-		PokerResponse pokerResponse = new PokerResponse(PokerHands.HIGH_CARD, 0); // Lowest possible hand.
-		int playerIndex = -1; // Just so java won't complain about a possibly non initialized variable.
-
-
-        if (this.turn == Turn.RIVER) {
-			for (Player player : this.orderedPlayers) {
-				if (player instanceof NPC && player.isPlaying) {
-					player.flipCards();
-				}
-			}
-
+		if (this.turn == Turn.RIVER) {
+		    flipNPCsIfPlaying();
 			Renderer.draw();
 			InputHandler.waitForEnter(Optional.of("Press enter to continue."));
 		}
 
-		for (int i = 0; i < this.orderedPlayers.length; i++) {
-			if (this.orderedPlayers[i].isPlaying) {
-				PokerResponse combination = PokerEngine.getCombo(
-						this.getCards(),
-						this.orderedPlayers[i].getHand());
-
-				if (combination.combination.ordinal() > pokerResponse.combination.ordinal()) {
-					pokerResponse = combination;
-					playerIndex = i;
-				} else if (combination.combination == pokerResponse.combination) {
-					if (combination.points > pokerResponse.points) {
-						pokerResponse = combination;
-						playerIndex = i;
-					} else if (combination.points == pokerResponse.points) {
-					    if (orderedPlayers[i].getHandPoints() > orderedPlayers[playerIndex].getHandPoints()) {
-							playerIndex = i;
-						} else {
-					    	System.out.println("possible draw.");
-						}
-					}
-				}
-			}
-		}
-
-		Player player = orderedPlayers[playerIndex];
+		Player player = getWinner();
 		player.getInfo().incrementMoney(pot);
 
 		int playingCount = (int) Arrays.stream(this.orderedPlayers).filter(p -> p.isPlaying).count();
@@ -399,24 +381,68 @@ public class Table extends Drawable {
 		} else {
 			endingScreen = new EndingScreen(
 					player.getInfo().getName(),
-					pokerResponse);
+					PokerEngine.getCombo(this.cards, player.getHand())
+			);
 		}
-
 
 		Renderer.addDrawable(endingScreen);
 		Renderer.draw();
         Renderer.removeDrawable(endingScreen);
+
 		isOver = true;
 	}
 
+	/**
+	 * Checks for the winner of the round.
+	 * The maximum depth of the check is: Combination -> Highest combination card value -> Highest hand value.
+	 * There are no TIE Breakers and the winner will be chosen randomly if they manage to match in all these criteria.
+	 * @return the winner player.
+	 */
+	private Player getWinner() {
+		PokerResponse pokerResponse = new PokerResponse(PokerHands.HIGH_CARD, 0); // Lowest possible hand.
+		int playerIndex = -1; // Just so java won't complain about a possibly non initialized variable.
+		for (int i = 0; i < this.orderedPlayers.length; i++) {
+			if (this.orderedPlayers[i].isPlaying == false) continue;
+			//Get the combination of each playing player.
+			PokerResponse combination = PokerEngine.getCombo(
+					this.getCards(),
+					this.orderedPlayers[i].getHand()
+			);
+			// If the combination int is greater than the poker response, substitute it.
+			if (combination.combination.ordinal() > pokerResponse.combination.ordinal()) {
+				pokerResponse = combination;
+				playerIndex = i;
+				// If they are the same combination, check for the value of the highest card of the combination.
+			} else if (combination.combination == pokerResponse.combination) {
+				if (combination.points > pokerResponse.points) {
+					pokerResponse = combination;
+					playerIndex = i;
+					// If they are the same highest card, check for the value of the full hand.
+					// This is already an simplification to poker rules, but it will work in most scenarios.
+				} else if (combination.points == pokerResponse.points) {
+					if (orderedPlayers[i].getHandPoints() > orderedPlayers[playerIndex].getHandPoints()) {
+						playerIndex = i;
+						// To simplify the program, this is the maximum depth that the winner check will go.
+					}
+				}
+			}
+		}
+		return orderedPlayers[playerIndex];
+	}
+
+	/**
+	 * Restart all the turn and round variables in the game, setting the table for a new round.
+	 * Creates a new Deck object and sets the player turn related variables,
+	 * 	keeping them from playing if they don't have enough money to pay for the biggest blind.
+	 * If there is only one player that doesn't meet this criteria, it prompts with a message that the game
+	 * is over and exits the game.
+	 */
 	public void restart(){
 		resetTurn();
-
 		this.isOver = false;
 		this.turn = Turn.PREFLOP;
 		this.lastBet = Blind.BIG.price;
 		this.orderPlayersByBet();
-		this.lastToRaise = -1;
 		this.pot = Blind.BIG.price + Blind.SMALL.price;
 		this.betPrice = Blind.BIG.price;
 
@@ -428,23 +454,24 @@ public class Table extends Drawable {
 				player.isPlaying = true;
 				player.setHand(deck.drawRandomCard(), deck.drawRandomCard());
 			} else {
-				System.out.println("here");
 				player.isPlaying = false;
 				if (player.getHand()[0].isUp()) {
 					player.flipCards();
 				}
 			}
-			player.finishTurn(); // Reset to white or red cards.
+			player.finishTurn();
 		}
 		if (players.stream().filter(p -> !p.isPlaying).count() == this.players.size() -1 ) {
 		    System.out.println("Thank you for playing! Everyone else lost. :) You are too good.");
 		    System.exit(0);
 		}
-
 		this.moveBlinds();
-
 	}
 
+	/**
+	 * Restart all the Turn related variables, setting the table for a new turn.
+	 * It also reset the player turn related variables.
+	 */
 	private void resetTurn() {
 		this.lastBet = 0;
 		this.betPrice = 0;
@@ -455,6 +482,9 @@ public class Table extends Drawable {
 				});
 	}
 
+	/**
+	 * Check if the game can end and sets the isOver variable.
+	 */
 	private void tryFinish() {
 		int foldCount = 0;
 		for (Player player : this.players) {

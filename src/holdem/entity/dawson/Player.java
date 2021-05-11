@@ -157,13 +157,11 @@ public abstract class Player extends Drawable {
 	public void setBlind(Blind blind) {
 		this.info.setBlind(blind);
 
-		System.out.println("" + this.info.getBlind() + " for " + this.info.getName());
 
 		// If the player can't spend the money, zero his balance.
 	}
 
 	public void applyBlind() {
-	    System.out.println("called.");
 		if ( this.info.canSpend(this.getBlind().price) ) {
 			this.info.incrementMoney(-this.getBlind().price);
 			this.info.incrementOnTable(this.getBlind().price);
@@ -217,10 +215,6 @@ public abstract class Player extends Drawable {
 		}
 	}
 
-	public boolean isTurn() {
-		return this.isTurn;
-	}
-
 	public Card[] getHand() {
 		return hand;
 	}
@@ -254,10 +248,9 @@ public abstract class Player extends Drawable {
 	}
 
 	/**
-	 * Handle action of betting.
+	 * Handle action of betting and throws an exception if the player doesn't have enough money.
 	 * @param money the money to bet.
 	 * @return
-
 	 */
 	protected double handleBet(double money) throws Exception {
 		if (this.info.getMoney() > money) {
@@ -270,6 +263,11 @@ public abstract class Player extends Drawable {
 		}
 	}
 
+	/**
+	 * Handle action of raising and throws an exception if the player doesn't have enough money.
+	 * @param amount the money to bet.
+	 * @return
+	 */
 	protected double handleRaise(double amount) throws Exception {
 		double onTable = this.info.getOnTable();
 		if (this.info.canSpend(amount - onTable) ) {
@@ -282,6 +280,11 @@ public abstract class Player extends Drawable {
 		}
 	}
 
+	/**
+	 * Handle action of Calling and throws an exception if the player doesn't have enough money.
+	 * @param betPrice the cost that it takes to make a bet.
+	 * @return
+	 */
 	protected double handleCall(double betPrice) throws Exception {
 		double needToPay = betPrice - this.info.getOnTable();
 		if (needToPay >= this.info.getMoney()) { throw new Exception(); };
@@ -291,6 +294,11 @@ public abstract class Player extends Drawable {
 		return betPrice;
 	}
 
+	/**
+	 * Handle action of All-In and throws an exception if the player have no money.
+	 * @return
+	 * @throws Exception
+	 */
 	protected double handleAllIn() throws Exception {
 		double money = this.info.getMoney();
 		double ontable = this.info.getOnTable();
@@ -305,6 +313,9 @@ public abstract class Player extends Drawable {
 		}
 	}
 
+	/**
+	 * Set's the player cards' borders'  to yellow.
+	 */
 	protected void activatePlayer() {
 		for (int i = 0; i < this.hand.length; i++) {
 			this.hand[i].setColor(Color.YELLOW);

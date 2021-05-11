@@ -10,6 +10,12 @@ import holdem.engine.dawson.Card.Suit;
 
 public class PokerEngine {
 
+	/**
+	 * Evaluates all the possible combinations of given poker cards and returns a PokerResponse with
+	 * the highest combination and the value of its highest card
+	 * @param table table cards
+	 * @param hand hand cards
+	 */
 	public static PokerResponse getCombo(Card[] table, Card[] hand) {
 		Card[] a = new Card[table.length + hand.length];
 		for (int i = 0; i < table.length; i++) {
@@ -24,6 +30,11 @@ public class PokerEngine {
 
     }
 
+	/**
+	 * Evaluates all the possible combinations of given poker cards and returns a PokerResponse with
+	 * the highest combination and the value of its highest card
+	 * @param cards The cards to compare.
+	 */
 	public static PokerResponse getCombo(Card ... cards) {
 
 		Optional<PokerResponse> pair = checkPair(cards);
@@ -43,12 +54,12 @@ public class PokerEngine {
 			
 			if (straight.isPresent()) {
 
-				Optional<PokerHands> royal = checkRoyal(cards);
+				Optional<PokerResponse> royal = checkRoyal(cards);
 				if (royal.isPresent()) {
-					return new PokerResponse(PokerHands.ROYAL_FLUSH, 14);
+				    return royal.get();
 				}
-			
-				return straight.get();
+
+				return new PokerResponse(PokerHands.STRAIGHT_FLUSH, 0);
 			}	
 			
 			return flush.get();
@@ -60,14 +71,18 @@ public class PokerEngine {
 			return straight.get();
 		}
 
-
 		return highCard(Arrays.copyOfRange(cards, 5, 7));
 
 	}
 
-	private static Optional<PokerHands> checkRoyal(Card[] cards) {
+	/**
+	 * Check if the given Card array is a Royal Flush.
+	 * @param cards the cards to compare.
+	 * @return A PokerResponse if there is a royal flush
+	 */
+	private static Optional<PokerResponse> checkRoyal(Card[] cards) {
 		if (Arrays.asList(cards).stream().anyMatch(e -> e.getValue() == 14)) {
-			return Optional.of(PokerHands.ROYAL_FLUSH);
+			return Optional.of(new PokerResponse(PokerHands.ROYAL_FLUSH, 14));
 		}
 	
 		return Optional.empty();
@@ -75,6 +90,11 @@ public class PokerEngine {
 		
 	}
 
+	/**
+	 * Check if the given card array is a Flush.
+	 * @param cards the cards to compare
+	 * @return A PokerResponse if there is a Flush.
+	 */
 	private static Optional<PokerResponse> checkFlush(Card[] cards) {
 		for (Suit suit : Suit.values()) {
 			Supplier<Stream<Card>> cardStream = () -> Arrays.asList(cards).stream();
@@ -95,7 +115,12 @@ public class PokerEngine {
 		return Optional.empty();
 				
 	}
-	
+
+	/**
+	 * Check if the given card array is a Straight
+	 * @param cards the cards to compare
+	 * @return A PokerResponse if there is a Straight.
+	 */
 	private static Optional<PokerResponse> checkStraight(Card[] cards) {
 
 		List<Integer> sortedList = Arrays.asList(cards).stream()
@@ -104,7 +129,6 @@ public class PokerEngine {
 			.collect(Collectors.toList());
 		
 		for (int i = 1; i < sortedList.size(); i++) {
-			System.out.println(sortedList.get(i - 1) + ", " + (sortedList.get(i) -1));
 			if (sortedList.get(i - 1) != sortedList.get(i) -1){
 				return Optional.empty();
 			}
@@ -115,6 +139,11 @@ public class PokerEngine {
 		
 	}
 
+	/**
+	 * Return the card with the highest value of the deck.
+     * @param hand the cards to compare.
+	 * @return A poker response with the highest card of the deck.
+	 */
 	private static PokerResponse highCard(Card[] hand) {
 		Card highestCard = Arrays.stream(hand).max(Comparator.comparing(Card::getValue)).get();
 		return new PokerResponse(PokerHands.HIGH_CARD, highestCard.getValue());
@@ -145,8 +174,6 @@ public class PokerEngine {
 			}
 		}
 
-		System.out.println(occurrences.toString());
-			
 		Set<Entry<Integer, Integer>> occurrenceSet= occurrences.entrySet();
 
 		// Checks for four of a kind

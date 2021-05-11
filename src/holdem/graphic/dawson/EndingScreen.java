@@ -1,6 +1,5 @@
 package holdem.graphic.dawson;
 
-import holdem.engine.dawson.Card;
 import holdem.engine.dawson.PokerResponse;
 import holdem.hud.dawson.Dialogue;
 import holdem.hud.dawson.Text;
@@ -10,14 +9,13 @@ import holdem.renderer.dawson.Renderer;
 import holdem.utils.dawson.Color;
 
 public class EndingScreen extends Drawable {
-
-
-    // TODO won by resignation
-    // TODO all in.
-
-
     private final Dialogue congratulation;
 
+    /**
+     * Creates an EndingScreen with only the player name and assumes they have won the game
+     * by resignation.
+     * @param playerName
+     */
     public EndingScreen(String playerName) {
         super(0, 0);
 
@@ -30,6 +28,12 @@ public class EndingScreen extends Drawable {
 
     }
 
+    /**
+     * Creates an EndingScreen with the winner player name and displays the combination status
+     * that he used to win the game.
+     * @param playerName
+     * @param combinations
+     */
     public EndingScreen(String playerName, PokerResponse combinations) {
         super(0, 0);
 

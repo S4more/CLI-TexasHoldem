@@ -60,7 +60,6 @@ public class Human extends Player {
                     try {
                         return this.handleCall(lastBet);
                     } catch (Exception e) {
-                        e.printStackTrace();
                         InputHandler.waitForEnter(Optional.of("Oupsie oupsie! You don't have the money to call!"));
                         return getInput(new Option[] {Option.FOLD, Option.ALLIN}, lastBet);
                     }
@@ -78,6 +77,11 @@ public class Human extends Player {
         }
     }
 
+    /**
+     * Adds a HBoxContainer with all the options that a player can pick in a turn
+     * to the Renderer OPTION buffer array.
+     * @param options
+     */
     private void addOptionsToScreen(Option[] options) {
         VBoxContainer[] splitBoxes = Container.splitIntoMultiple(0, 0, 20, 3,
                 options
@@ -91,8 +95,6 @@ public class Human extends Player {
         Renderer.draw();
 
     }
-
-
 
     /**
      * Set the hand of the player and flip the cards so they face up.

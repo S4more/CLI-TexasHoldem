@@ -4,8 +4,12 @@ import holdem.engine.dawson.Blind;
 import holdem.hud.dawson.Text;
 import holdem.utils.dawson.Color;
 
+/**
+ * Holds all the info that will be shown in the game screen related to players.
+ */
 public class PlayerInfo {
 	private final String name;
+	/** The amount of money that the player put on the table in the current turn */
 	private double onTable;
 	private double money;
 	private Blind blind = Blind.NONE;
@@ -16,19 +20,11 @@ public class PlayerInfo {
 		this.onTable = 0;
 	}
 
-	public boolean canSpend(double amount) {
-		return (this.money - amount > 0);
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-
-	public void incrementMoney(double quantity) {
-	    this.money += quantity;
-	}
-	
+	/**
+	 * Creates a string array representing this class.
+	 * It generates a: Name, Money, On table and if present, a Blind.
+	 * @return the generated array.
+	 */
 	public String[] asStringArray() {
 		String array[] = new String[4];
 		array[0] = "Name: " + this.name;
@@ -42,6 +38,11 @@ public class PlayerInfo {
 		return array;
 	}
 
+	/**
+	 * Creates a Text array representing this class.
+	 * It generates a: Name, Money, On table and if present, a Blind.
+	 * @return the generated array.
+	 */
 	public Text[] asTextArray(Color color) {
 		Text array[] = new Text[4];
 		array[0] = new Text("Name: " + this.name, color);
@@ -53,6 +54,19 @@ public class PlayerInfo {
 			array[3] = new Text("Blind: " + this.blind.name(), Color.GREEN);
 		}
 		return array;
+	}
+
+	public boolean canSpend(double amount) {
+		return (this.money - amount > 0);
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+
+	public void incrementMoney(double quantity) {
+		this.money += quantity;
 	}
 
 	public void setBlind(Blind blind) {

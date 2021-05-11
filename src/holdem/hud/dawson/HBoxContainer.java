@@ -2,7 +2,6 @@ package holdem.hud.dawson;
 
 import holdem.graphic.dawson.Drawable;
 import holdem.renderer.dawson.RenderType;
-import holdem.renderer.dawson.Renderer;
 import holdem.utils.dawson.ArrayHelper;
 
 import java.util.Arrays;
@@ -12,8 +11,12 @@ public class HBoxContainer extends Drawable {
     private final Drawable elements[];
     private final int WIDTH;
     private final int HEIGHT;
-    private final int padding = 2;
 
+    /**
+     * Holds objects inside a given space and display them side by side.
+     * @param w max size that the container can have.
+     * @param h Number of rows that it have.
+     */
     public HBoxContainer(int x, int y, int w, int h, Drawable... elements) {
         super(x, y);
         this.WIDTH = w;
@@ -29,8 +32,6 @@ public class HBoxContainer extends Drawable {
                    this.cords[1]
            );
         }
-
-
     }
 
     @Override

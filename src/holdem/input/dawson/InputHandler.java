@@ -1,6 +1,5 @@
 package holdem.input.dawson;
 
-import holdem.engine.dawson.Action;
 import holdem.graphic.dawson.Drawable;
 import holdem.hud.dawson.Text;
 import holdem.renderer.dawson.RenderType;
@@ -70,9 +69,16 @@ public class InputHandler extends Drawable {
             if (option.hasArgs) {
                 try {
                     System.out.print(Color.RESET);
+                    if(Integer.valueOf(splitInput[1]) < 0) {
+                        printError("Please input a positive argument!");
+                        continue;
+                    }
                     return new InputResponse(option, Optional.of(Integer.valueOf(splitInput[1])));
                 } catch (ArrayIndexOutOfBoundsException e) {
                     printError("This option requires an argument!");
+                    continue;
+                } catch (NumberFormatException e) {
+                    printError("This number is too big.");
                     continue;
                 }
             }
@@ -92,7 +98,8 @@ public class InputHandler extends Drawable {
     }
 
     /**
-     *
+     * Stop the program execution with a scanner and, if present
+     * displays a message.
      */
     public static void waitForEnter(Optional<String> message) {
         System.out.print("\033[2K"); // Clears the current line.
@@ -100,10 +107,6 @@ public class InputHandler extends Drawable {
             System.out.print(Color.ERROR + message.get() + Color.RESET);
         }
         scanner.nextLine();
-    }
-
-    private static boolean checkInputValidation(int input, int min, int max) {
-        return input >= min && input <= max;
     }
 
     public static InputHandler getInstance() {

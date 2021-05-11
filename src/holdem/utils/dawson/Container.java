@@ -40,8 +40,6 @@ public class Container {
 
         VBoxContainer output[] = new VBoxContainer[containers.size()];
 
-        // containers.forEach(e -> System.out.println(e));
-
         return containers.toArray(output);
     }
 

@@ -5,7 +5,6 @@ import holdem.entity.dawson.NPC;
 import holdem.entity.dawson.Player;
 import holdem.graphic.dawson.MenuScreen;
 import holdem.input.dawson.InputHandler;
-import holdem.input.dawson.InputResponse;
 import holdem.renderer.dawson.Renderer;
 import holdem.renderer.dawson.ScreenSection;
 import holdem.utils.dawson.Color;

@@ -3,8 +3,6 @@ package holdem.entity.dawson;
 import holdem.engine.dawson.Card;
 import holdem.input.dawson.Option;
 import holdem.renderer.dawson.ScreenSection;
-import holdem.utils.dawson.Color;
-
 import java.util.Random;
 
 public class NPC extends Player {
@@ -26,13 +24,7 @@ public class NPC extends Player {
         Random rand = new Random();
         activatePlayer();
 
-        for (Option option : options ) {
-            System.out.println(option.action.toString());
-        }
         Option chosenOption = options[rand.nextInt(options.length)];
-
-        System.out.println("Pick: " + chosenOption.action.name());
-
         switch ( chosenOption.action ) {
             case FOLD:
                 return this.handleFold();
@@ -43,7 +35,6 @@ public class NPC extends Player {
                 try {
                     return handleBet(randomPrice);
                 } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
             case RAISE: {
@@ -52,8 +43,6 @@ public class NPC extends Player {
                     double randomPrice = 1 + rand.nextInt((int) (spendLimit - lastBet - 1));
                     return handleRaise(randomPrice + lastBet);
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println("No money to raise.");
                     return getInput(new Option[]{Option.FOLD, Option.ALLIN}, lastBet);
                 }
             }

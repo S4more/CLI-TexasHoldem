@@ -7,18 +7,13 @@ import holdem.utils.dawson.Color;
 
 import java.util.Arrays;
 
+/**
+ * A box with visible borders that extends a VboxContainer. The only difference from its
+ * parent are the borders and the fact that it aligns in the center.
+ */
 public class Dialogue extends VBoxContainer{
 
     private boolean isActive = false;
-
-    public Dialogue(int x, int y, Text ... elements ) {
-        super(x, y, elements);
-
-        for (int i = 0; i < elements.length; i++) {
-            elements[i].setPos(this.cords[0] , this.cords[1]);
-        }
-
-    }
 
     public Dialogue(int x, int y, int width, int height, Text ... elements ) {
         super(x, y, width, height, elements);
